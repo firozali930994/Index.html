@@ -750,6 +750,28 @@ function getSmartErrorMessage(error, originalQuestion) {
                 document.body.innerHTML = document.body.innerHTML.replace(/--- \/ 100/g, '85 / 100');
                 
                 // Replace "..." with demo values
+                document.body.innerHTML = document.body.innerHTML.replace(/\.\.\./g, function(match, offset, string) {
+                    const context = string.substring(Math.max(0, offset-50), offset+50).toLowerCase();
+                    if (context.includes('current')) return '65%';
+                    if (context.includes('overdue')) return '35%';
+                    if (context.includes('cash') || context.includes('outflow')) return '$125K';
+                    if (context.includes('non-productive')) return '$45K';
+                    if (context.includes('ratio')) return '12.5%';
+                    if (context.includes('accuracy')) return '98.2%';
+                    if (context.includes('savings')) return '$15K';
+                    if (context.includes('debt')) return '$2.5K';
+                    if (context.includes('dues')) return '$125K';
+                    if (context.includes('suppliers')) return '45';
+                    if (context.includes('transactions')) return '1,250';
+                    if (context.includes('budget')) return '$85K';
+                    if (context.includes('items')) return '45';
+                    if (context.includes('potential')) return '$15K';
+                    if (context.includes('overstocked')) return '$25K';
+                    if (context.includes('forecast')) return '98.2%';
+                    return 'Demo Data';
+                });
+                
+                // Replace "..." with demo values
                 document.body.innerHTML = document.body.innerHTML.replace(/\.\.\./g, 'Demo Data');
                 
                 // Update health gauge
