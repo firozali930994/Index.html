@@ -744,46 +744,57 @@ function getSmartErrorMessage(error, originalQuestion) {
 
         // Load demo data for GitHub Pages
         function loadDemoData() {
-            // Simple demo data loading
-            setTimeout(() => {
-                // Replace "--- / 100" with "85 / 100"
-                document.body.innerHTML = document.body.innerHTML.replace(/--- \/ 100/g, '85 / 100');
-                
-                // Replace "..." with demo values
-                document.body.innerHTML = document.body.innerHTML.replace(/\.\.\./g, function(match, offset, string) {
-                    const context = string.substring(Math.max(0, offset-50), offset+50).toLowerCase();
-                    if (context.includes('current')) return '65%';
-                    if (context.includes('overdue')) return '35%';
-                    if (context.includes('cash') || context.includes('outflow')) return '$125K';
-                    if (context.includes('non-productive')) return '$45K';
-                    if (context.includes('ratio')) return '12.5%';
-                    if (context.includes('accuracy')) return '98.2%';
-                    if (context.includes('savings')) return '$15K';
-                    if (context.includes('debt')) return '$2.5K';
-                    if (context.includes('dues')) return '$125K';
-                    if (context.includes('suppliers')) return '45';
-                    if (context.includes('transactions')) return '1,250';
-                    if (context.includes('budget')) return '$85K';
-                    if (context.includes('items')) return '45';
-                    if (context.includes('potential')) return '$15K';
-                    if (context.includes('overstocked')) return '$25K';
-                    if (context.includes('forecast')) return '98.2%';
-                    return 'Demo Data';
+            // Load actual data from backend
+            console.log('Loading actual data from backend...');
+            
+            // Try to load data from backend API
+            fetch('/api/dashboard/data')
+                .then(response => response.json())
+                .then(data => {
+                    // Update dashboard with actual data
+                    updateDashboardWithData(data);
+                })
+                .catch(error => {
+                    console.log('Backend not available, showing placeholder data');
+                    // Show placeholder data when backend is not available
+                    showPlaceholderData();
                 });
-                
-                // Replace "..." with demo values
-                document.body.innerHTML = document.body.innerHTML.replace(/\.\.\./g, 'Demo Data');
-                
-                // Update health gauge
-                const healthGauge = document.querySelector('.health-gauge');
-                if (healthGauge) {
-                    healthGauge.style.setProperty('--p', '85');
-                    healthGauge.style.setProperty('--c1', '#10b981');
-                    healthGauge.style.setProperty('--c2', '#e5e7eb');
+        }
+        
+        // Update dashboard with actual data
+        function updateDashboardWithData(data) {
+            // Update Working Capital Health
+            const healthScore = document.querySelector('.health-score-text, [data-key="health_score"]');
+            if (healthScore && data.workingCapitalHealth) {
+                healthScore.textContent = data.workingCapitalHealth;
+            }
+            
+            // Update Payables Aging
+            if (data.payablesAging) {
+                const currentAging = document.querySelector('[data-key="current_aging"]');
+                const overdueAging = document.querySelector('[data-key="overdue_aging"]');
+                if (currentAging) currentAging.textContent = data.payablesAging.current + '%';
+                if (overdueAging) overdueAging.textContent = data.payablesAging.overdue + '%';
+            }
+            
+            // Update all other data fields
+            Object.keys(data).forEach(key => {
+                const element = document.querySelector(`[data-key="${key}"]`);
+                if (element && data[key]) {
+                    element.textContent = data[key];
                 }
-                
-                console.log('Demo data loaded!');
-            }, 1000);
+            });
+        }
+        
+        // Show placeholder data when backend is not available
+        function showPlaceholderData() {
+            // Show "---" or "Loading..." instead of demo data
+            const allElements = document.querySelectorAll('[data-key]');
+            allElements.forEach(element => {
+                if (element.textContent.trim() === '') {
+                    element.textContent = '---';
+                }
+            });
         }
 
         // Load demo insights data for original structure
@@ -888,23 +899,12 @@ function getSmartErrorMessage(error, originalQuestion) {
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Check if we're on GitHub Pages
-            const isGitHubPages = window.location.hostname.includes('github.io');
-            
-            // For GitHub Pages, show demo mode
-            if (isGitHubPages) {
-                const token = localStorage.getItem('sakura_token');
-                if (!token) {
-                    showDemoMode();
-                    return;
-                }
-            } else {
-                // For local development, redirect to signup
-                const token = localStorage.getItem('sakura_token');
-                if (!token) {
-                    window.location.href = '/signup.html';
-                    return;
-                }
+            // Check for authentication token
+            const token = localStorage.getItem('sakura_token');
+            if (!token) {
+                // Redirect to signup if no token
+                window.location.href = 'signup.html';
+                return;
             }
 
             // Prefill profile data
