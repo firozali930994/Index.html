@@ -728,10 +728,8 @@ function getSmartErrorMessage(error, originalQuestion) {
                 demoMessage.remove();
             }, 10000);
             
-            // Load demo data immediately and with delay
+            // Load demo data
             loadDemoData();
-            setTimeout(loadDemoData, 1000);
-            setTimeout(loadDemoData, 3000);
         }
 
         // Show signup modal for demo
@@ -746,69 +744,13 @@ function getSmartErrorMessage(error, originalQuestion) {
 
         // Load demo data for GitHub Pages
         function loadDemoData() {
-            console.log('Loading demo data...');
-            
-            // Wait for DOM to be fully loaded
+            // Simple demo data loading
             setTimeout(() => {
-                // Update Working Capital Health - Multiple selectors
-                const healthScore = document.querySelector('.health-score-text, [data-key="health_score"], .text-4xl, .text-3xl');
-                if (healthScore) {
-                    healthScore.textContent = '85';
-                }
+                // Replace "--- / 100" with "85 / 100"
+                document.body.innerHTML = document.body.innerHTML.replace(/--- \/ 100/g, '85 / 100');
                 
-                // Replace all placeholder text with demo data
-                const allElements = document.querySelectorAll('*');
-                allElements.forEach(element => {
-                    if (element.textContent) {
-                        // Replace "--- / 100" with "85 / 100"
-                        if (element.textContent.includes('--- / 100')) {
-                            element.textContent = element.textContent.replace('--- / 100', '85 / 100');
-                        }
-                        // Replace "..." with demo values
-                        if (element.textContent.trim() === '...') {
-                            // Try to determine what type of data this should be based on context
-                            const parent = element.parentElement;
-                            if (parent) {
-                                const parentText = parent.textContent.toLowerCase();
-                                if (parentText.includes('current')) {
-                                    element.textContent = '65%';
-                                } else if (parentText.includes('overdue')) {
-                                    element.textContent = '35%';
-                                } else if (parentText.includes('cash') || parentText.includes('outflow')) {
-                                    element.textContent = '$125K';
-                                } else if (parentText.includes('non-productive') || parentText.includes('capital')) {
-                                    element.textContent = '$45K';
-                                } else if (parentText.includes('overdue') && parentText.includes('ratio')) {
-                                    element.textContent = '12.5%';
-                                } else if (parentText.includes('accuracy')) {
-                                    element.textContent = '98.2%';
-                                } else if (parentText.includes('savings')) {
-                                    element.textContent = '$15K';
-                                } else if (parentText.includes('debt') || parentText.includes('supplier')) {
-                                    element.textContent = '$2.5K';
-                                } else if (parentText.includes('dues')) {
-                                    element.textContent = '$125K';
-                                } else if (parentText.includes('suppliers')) {
-                                    element.textContent = '45';
-                                } else if (parentText.includes('overdues')) {
-                                    element.textContent = '$35K';
-                                } else if (parentText.includes('transactions')) {
-                                    element.textContent = '1,250';
-                                } else if (parentText.includes('budget')) {
-                                    element.textContent = '$85K';
-                                } else if (parentText.includes('items') && parentText.includes('purchase')) {
-                                    element.textContent = '45';
-                                } else if (parentText.includes('potential')) {
-                                    element.textContent = '$15K';
-                                } else if (parentText.includes('overstocked')) {
-                                    element.textContent = '$25K';
-                                } else if (parentText.includes('forecast')) {
-                                    element.textContent = '98.2%';
-                                }
-                            }
-                        }
-                    }
-                });
+                // Replace "..." with demo values
+                document.body.innerHTML = document.body.innerHTML.replace(/\.\.\./g, 'Demo Data');
                 
                 // Update health gauge
                 const healthGauge = document.querySelector('.health-gauge');
@@ -818,106 +760,8 @@ function getSmartErrorMessage(error, originalQuestion) {
                     healthGauge.style.setProperty('--c2', '#e5e7eb');
                 }
                 
-                // Update Payables Aging
-                const currentAging = document.querySelector('[data-key="current_aging"], .aging-current');
-                const overdueAging = document.querySelector('[data-key="overdue_aging"], .aging-overdue');
-                if (currentAging) currentAging.textContent = '65%';
-                if (overdueAging) overdueAging.textContent = '35%';
-                
-                // Update aging bars
-                const agingBars = document.querySelectorAll('.aging-bar, .progress-bar');
-                if (agingBars.length >= 2) {
-                    agingBars[0].style.width = '65%';
-                    agingBars[1].style.width = '35%';
-                }
-                
-                // Update Key Financial Metrics
-                const cashOutflow = document.querySelector('[data-key="cash_outflow"], .cash-outflow');
-                const nonProductive = document.querySelector('[data-key="non_productive"], .non-productive');
-                if (cashOutflow) cashOutflow.textContent = '$125K';
-                if (nonProductive) nonProductive.textContent = '$45K';
-                
-                // Update Detailed Performance Indicators
-                const overdueRatio = document.querySelector('[data-key="overdue_ratio"], .overdue-ratio');
-                const accuracyImpact = document.querySelector('[data-key="accuracy_impact"], .accuracy-impact');
-                const savingsPower = document.querySelector('[data-key="savings_power"], .savings-power');
-                const avgDebt = document.querySelector('[data-key="avg_debt"], .avg-debt');
-                
-                if (overdueRatio) overdueRatio.textContent = '12.5%';
-                if (accuracyImpact) accuracyImpact.textContent = '98.2%';
-                if (savingsPower) savingsPower.textContent = '$15K';
-                if (avgDebt) avgDebt.textContent = '$2.5K';
-                
-                // Update Accounts Payable Summary
-                const totalDues = document.querySelector('[data-key="total_dues"], .total-dues');
-                const totalSuppliers = document.querySelector('[data-key="total_suppliers"], .total-suppliers');
-                const overdues = document.querySelector('[data-key="overdues"], .overdues');
-                const totalTransactions = document.querySelector('[data-key="total_transactions"], .total-transactions');
-                
-                if (totalDues) totalDues.textContent = '$125K';
-                if (totalSuppliers) totalSuppliers.textContent = '45';
-                if (overdues) overdues.textContent = '$35K';
-                if (totalTransactions) totalTransactions.textContent = '1,250';
-                
-                // Update Raw Material Forecasting
-                const netBudget = document.querySelector('[data-key="net_budget"], .net-budget');
-                const itemsToPurchase = document.querySelector('[data-key="items_purchase"], .items-purchase');
-                const potentialSavings = document.querySelector('[data-key="potential_savings"], .potential-savings');
-                const overstockedValue = document.querySelector('[data-key="overstocked_value"], .overstocked-value');
-                const forecastAccuracy = document.querySelector('[data-key="forecast_accuracy"], .forecast-accuracy');
-                
-                if (netBudget) netBudget.textContent = '$85K';
-                if (itemsToPurchase) itemsToPurchase.textContent = '45';
-                if (potentialSavings) potentialSavings.textContent = '$15K';
-                if (overstockedValue) overstockedValue.textContent = '$25K';
-                if (forecastAccuracy) forecastAccuracy.textContent = '98.2%';
-                
-                // Update Recommendation Engine
-                const recommendationEngine = document.querySelector('.recommendation-engine, .analysis-card');
-                if (recommendationEngine) {
-                    recommendationEngine.innerHTML = `
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-lightbulb text-yellow-500 text-xl mr-2"></i>
-                            <h4 class="font-semibold">Smart Recommendations</h4>
-                        </div>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex items-center">
-                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                <span>Reduce overdue payments by 15%</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                <span>Optimize inventory levels</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                <span>Negotiate better supplier terms</span>
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                // Update all progress bars and circular indicators
-                const progressBars = document.querySelectorAll('.progress-bar, .aging-bar, [class*="progress"]');
-                const percentages = [85, 90, 25, 95, 80, 75, 60, 40, 98];
-                progressBars.forEach((bar, index) => {
-                    if (percentages[index]) {
-                        bar.style.width = `${percentages[index]}%`;
-                    }
-                });
-                
-                // Update circular progress indicators
-                const circularProgress = document.querySelectorAll('[style*="stroke-dasharray"], .circular-progress');
-                circularProgress.forEach((progress, index) => {
-                    if (percentages[index]) {
-                        const circumference = 2 * Math.PI * 20;
-                        const offset = circumference - (percentages[index] / 100) * circumference;
-                        progress.style.strokeDashoffset = offset;
-                    }
-                });
-                
-                console.log('Demo data loaded successfully!');
-            }, 2000);
+                console.log('Demo data loaded!');
+            }, 1000);
         }
 
         // Load demo insights data for original structure
